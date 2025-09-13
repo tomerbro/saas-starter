@@ -14,7 +14,7 @@ STRIPE_SECRET_KEY=your_stripe_secret_key
 STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
 
 # App Configuration
-BASE_URL=http://localhost:3000
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
 ## Database Setup
@@ -87,9 +87,25 @@ CREATE TRIGGER on_auth_user_created
 1. Go to Authentication > Settings in your Supabase dashboard
 2. Configure the following:
    - Site URL: `http://localhost:3000` (for development)
-   - Redirect URLs: `http://localhost:3000/dashboard`
+   - Redirect URLs: `http://localhost:3000/dashboard`, `http://localhost:3000/auth/callback`
    - Email confirmation: Enable if desired
    - Password requirements: Set as needed
+
+## Google OAuth Setup
+
+1. Go to Authentication > Providers in your Supabase dashboard
+2. Enable Google provider
+3. Get your Google OAuth credentials:
+   - Go to [Google Cloud Console](https://console.cloud.google.com/)
+   - Create a new project or select existing one
+   - Enable Google+ API
+   - Go to Credentials > Create Credentials > OAuth 2.0 Client ID
+   - Set application type to "Web application"
+   - Add authorized redirect URIs:
+     - `https://your-project-ref.supabase.co/auth/v1/callback`
+     - `http://localhost:3000/auth/callback` (for development)
+4. Copy the Client ID and Client Secret to Supabase
+5. Save the configuration
 
 ## Stripe Integration
 

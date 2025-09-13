@@ -40,7 +40,8 @@ export async function updateSession(request: NextRequest) {
     '/sign-in',
     '/sign-up', 
     '/pricing',
-    '/api'
+    '/api',
+    '/auth'
   ]
 
   // Check if it's exactly the root route or a public route

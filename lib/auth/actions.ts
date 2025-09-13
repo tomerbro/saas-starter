@@ -194,6 +194,26 @@ export async function deleteAccount(prevState: any, formData: FormData) {
   redirect('/sign-in')
 }
 
+export async function signInWithGoogle() {
+  const supabase = await createClient()
+  
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`
+    }
+  })
+
+  if (error) {
+    console.error('Google OAuth error:', error.message)
+    return
+  }
+
+  if (data.url) {
+    redirect(data.url)
+  }
+}
+
 async function logActivity(userId: string, action: ActivityType, ipAddress?: string) {
   const supabase = await createClient()
   

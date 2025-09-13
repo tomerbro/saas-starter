@@ -9,7 +9,8 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { CircleIcon, Loader2, Mail, Lock } from 'lucide-react';
-import { signIn, signUp } from '@/lib/auth/actions';
+import { signIn, signUp, signInWithGoogle } from '@/lib/auth/actions';
+import { GoogleIcon } from '@/components/ui/google-icon';
 
 type ActionState = {
   error?: string;
@@ -138,6 +139,17 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
                 </span>
               </div>
             </div>
+
+            <form action={signInWithGoogle}>
+              <Button
+                type="submit"
+                variant="outline"
+                className="w-full"
+              >
+                <GoogleIcon className="mr-2 h-4 w-4" />
+                Continue with Google
+              </Button>
+            </form>
 
             <div className="text-center text-sm">
               <span className="text-muted-foreground">
