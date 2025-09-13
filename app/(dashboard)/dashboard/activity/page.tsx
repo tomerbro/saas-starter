@@ -1,4 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 import {
   Settings,
   LogOut,
@@ -7,6 +9,7 @@ import {
   UserCog,
   AlertCircle,
   UserMinus,
+  Activity as ActivityIcon,
   type LucideIcon,
 } from 'lucide-react';
 import { ActivityType } from '@/lib/supabase/types';
@@ -58,48 +61,67 @@ export default async function ActivityPage() {
   const logs = await getActivityLogs();
 
   return (
-    <section className="flex-1 p-4 lg:p-8">
-      <h1 className="text-lg lg:text-2xl font-medium text-gray-900 mb-6">
-        Activity Log
-      </h1>
+    <div className="flex-1 space-y-6 p-6 md:p-8">
+      <div className="space-y-2">
+        <h2 className="text-3xl font-bold tracking-tight">Activity Log</h2>
+        <p className="text-muted-foreground">
+          View your recent account activity and security events
+        </p>
+      </div>
+      
       <Card>
         <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <ActivityIcon className="h-5 w-5" />
+            Recent Activity
+          </CardTitle>
+          <CardDescription>
+            Your recent account activities and security events
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {logs.length > 0 ? (
-            <ul className="space-y-4">
-              {logs.map((log) => {
+            <div className="space-y-4">
+              {logs.map((log, index) => {
                 const Icon = iconMap[log.action as ActivityType] || Settings;
                 const formattedAction = formatAction(
                   log.action as ActivityType
                 );
 
                 return (
-                  <li key={log.id} className="flex items-center space-x-4">
-                    <div className="bg-orange-100 rounded-full p-2">
-                      <Icon className="w-5 h-5 text-orange-600" />
+                  <div key={log.id}>
+                    <div className="flex items-start space-x-4">
+                      <div className="bg-primary/10 rounded-full p-2">
+                        <Icon className="w-4 h-4 text-primary" />
+                      </div>
+                      <div className="flex-1 space-y-1">
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm font-medium">
+                            {formattedAction}
+                          </p>
+                          <Badge variant="outline" className="text-xs">
+                            {getRelativeTime(new Date(log.timestamp))}
+                          </Badge>
+                        </div>
+                        {log.ip_address && (
+                          <p className="text-xs text-muted-foreground">
+                            From IP: {log.ip_address}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900">
-                        {formattedAction}
-                        {log.ipAddress && ` from IP ${log.ipAddress}`}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {getRelativeTime(new Date(log.timestamp))}
-                      </p>
-                    </div>
-                  </li>
+                    {index < logs.length - 1 && <Separator className="mt-4" />}
+                  </div>
                 );
               })}
-            </ul>
+            </div>
           ) : (
             <div className="flex flex-col items-center justify-center text-center py-12">
-              <AlertCircle className="h-12 w-12 text-orange-500 mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <AlertCircle className="h-12 w-12 text-muted-foreground mb-4" />
+              <h3 className="text-lg font-semibold mb-2">
                 No activity yet
               </h3>
-              <p className="text-sm text-gray-500 max-w-sm">
+              <p className="text-sm text-muted-foreground max-w-sm">
                 When you perform actions like signing in or updating your
                 account, they'll appear here.
               </p>
@@ -107,6 +129,6 @@ export default async function ActivityPage() {
           )}
         </CardContent>
       </Card>
-    </section>
+    </div>
   );
 }

@@ -6,7 +6,9 @@ import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { CircleIcon, Loader2 } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { CircleIcon, Loader2, Mail, Lock } from 'lucide-react';
 import { signIn, signUp } from '@/lib/auth/actions';
 
 type ActionState = {
@@ -26,120 +28,134 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
   );
 
   return (
-    <div className="min-h-[100dvh] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gray-50">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="flex justify-center">
-          <CircleIcon className="h-12 w-12 text-orange-500" />
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <div className="w-full max-w-md space-y-6">
+        <div className="text-center">
+          <div className="flex justify-center mb-4">
+            <CircleIcon className="h-12 w-12 text-primary" />
+          </div>
+          <h1 className="text-2xl font-bold">
+            {mode === 'signin' ? 'Welcome back' : 'Create account'}
+          </h1>
+          <p className="text-muted-foreground">
+            {mode === 'signin'
+              ? 'Sign in to your account to continue'
+              : 'Get started with your free account'}
+          </p>
         </div>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          {mode === 'signin'
-            ? 'Sign in to your account'
-            : 'Create your account'}
-        </h2>
-      </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <form className="space-y-6" action={formAction}>
-          <input type="hidden" name="redirect" value={redirect || ''} />
-          <input type="hidden" name="priceId" value={priceId || ''} />
-          <div>
-            <Label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Email
-            </Label>
-            <div className="mt-1">
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                defaultValue={state.email}
-                required
-                maxLength={50}
-                className="appearance-none rounded-full relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm"
-                placeholder="Enter your email"
-              />
-            </div>
-          </div>
-
-          <div>
-            <Label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Password
-            </Label>
-            <div className="mt-1">
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete={
-                  mode === 'signin' ? 'current-password' : 'new-password'
-                }
-                defaultValue={state.password}
-                required
-                minLength={8}
-                maxLength={100}
-                className="appearance-none rounded-full relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm"
-                placeholder="Enter your password"
-              />
-            </div>
-          </div>
-
-          {state?.error && (
-            <div className="text-red-500 text-sm">{state.error}</div>
-          )}
-
-          <div>
-            <Button
-              type="submit"
-              className="w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-full shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
-              disabled={pending}
-            >
-              {pending ? (
-                <>
-                  <Loader2 className="animate-spin mr-2 h-4 w-4" />
-                  Loading...
-                </>
-              ) : mode === 'signin' ? (
-                'Sign in'
-              ) : (
-                'Sign up'
-              )}
-            </Button>
-          </div>
-        </form>
-
-        <div className="mt-6">
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300" />
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-gray-50 text-gray-500">
-                {mode === 'signin'
-                  ? 'New to our platform?'
-                  : 'Already have an account?'}
-              </span>
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <Link
-              href={`${mode === 'signin' ? '/sign-up' : '/sign-in'}${
-                redirect ? `?redirect=${redirect}` : ''
-              }${priceId ? `&priceId=${priceId}` : ''}`}
-              className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
-            >
+        <Card>
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl text-center">
+              {mode === 'signin' ? 'Sign in' : 'Sign up'}
+            </CardTitle>
+            <CardDescription className="text-center">
               {mode === 'signin'
-                ? 'Create an account'
-                : 'Sign in to existing account'}
-            </Link>
-          </div>
-        </div>
+                ? 'Enter your credentials to access your account'
+                : 'Enter your details to create your account'}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <form className="space-y-4" action={formAction}>
+              <input type="hidden" name="redirect" value={redirect || ''} />
+              <input type="hidden" name="priceId" value={priceId || ''} />
+              
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    defaultValue={state.email}
+                    required
+                    maxLength={50}
+                    placeholder="Enter your email"
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoComplete={
+                      mode === 'signin' ? 'current-password' : 'new-password'
+                    }
+                    defaultValue={state.password}
+                    required
+                    minLength={8}
+                    maxLength={100}
+                    placeholder="Enter your password"
+                    className="pl-10"
+                  />
+                </div>
+                {mode === 'signup' && (
+                  <p className="text-xs text-muted-foreground">
+                    Password must be at least 8 characters long
+                  </p>
+                )}
+              </div>
+
+              {state?.error && (
+                <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive">
+                  {state.error}
+                </div>
+              )}
+
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={pending}
+              >
+                {pending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Loading...
+                  </>
+                ) : mode === 'signin' ? (
+                  'Sign in'
+                ) : (
+                  'Sign up'
+                )}
+              </Button>
+            </form>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <Separator className="w-full" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">
+                  Or continue with
+                </span>
+              </div>
+            </div>
+
+            <div className="text-center text-sm">
+              <span className="text-muted-foreground">
+                {mode === 'signin'
+                  ? "Don't have an account? "
+                  : 'Already have an account? '}
+              </span>
+              <Link
+                href={`${mode === 'signin' ? '/sign-up' : '/sign-in'}${
+                  redirect ? `?redirect=${redirect}` : ''
+                }${priceId ? `&priceId=${priceId}` : ''}`}
+                className="text-primary hover:underline"
+              >
+                {mode === 'signin' ? 'Sign up' : 'Sign in'}
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
