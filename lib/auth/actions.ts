@@ -135,20 +135,39 @@ export async function updateAccount(prevState: any, formData: FormData) {
     email: formData.get('email') as string,
   }
 
-  const { error } = await supabase.auth.updateUser({
+  // Get current user first
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    return { error: 'User not authenticated' }
+  }
+
+  // Update user in Supabase Auth
+  const { error: authError } = await supabase.auth.updateUser({
     data: { name: data.name },
     email: data.email,
   })
 
-  if (error) {
-    return { error: error.message }
+  if (authError) {
+    return { error: authError.message }
+  }
+
+  // Update user in our custom users table
+  const { error: dbError } = await supabase
+    .from('users')
+    .update({
+      name: data.name,
+      email: data.email,
+      updated_at: new Date().toISOString()
+    })
+    .eq('id', user.id)
+
+  if (dbError) {
+    console.error('Failed to update user in database:', dbError)
+    return { error: 'Failed to update user profile' }
   }
 
   // Log activity
-  const { data: { user } } = await supabase.auth.getUser()
-  if (user) {
-    await logActivity(user.id, ActivityType.UPDATE_ACCOUNT)
-  }
+  await logActivity(user.id, ActivityType.UPDATE_ACCOUNT)
 
   revalidatePath('/', 'layout')
   return { success: 'Account updated successfully' }
