@@ -103,6 +103,7 @@ export async function getActivityLogs(): Promise<ActivityLog[]> {
     .from('activity_logs')
     .select(`
       id,
+      user_id,
       action,
       timestamp,
       ip_address
