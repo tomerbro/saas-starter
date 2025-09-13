@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 import { ActivityType } from '@/lib/supabase/types'
 
 export async function signIn(prevState: any, formData: FormData) {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   const data = {
     email: formData.get('email') as string,
@@ -53,7 +53,7 @@ export async function signIn(prevState: any, formData: FormData) {
 }
 
 export async function signUp(prevState: any, formData: FormData) {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   const data = {
     email: formData.get('email') as string,
@@ -91,7 +91,7 @@ export async function signUp(prevState: any, formData: FormData) {
 }
 
 export async function signOut() {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   // Log activity before signing out
   const { data: { user } } = await supabase.auth.getUser()
@@ -105,7 +105,7 @@ export async function signOut() {
 }
 
 export async function updatePassword(prevState: any, formData: FormData) {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   const data = {
     password: formData.get('newPassword') as string,
@@ -128,7 +128,7 @@ export async function updatePassword(prevState: any, formData: FormData) {
 }
 
 export async function updateAccount(prevState: any, formData: FormData) {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   const data = {
     name: formData.get('name') as string,
@@ -155,7 +155,7 @@ export async function updateAccount(prevState: any, formData: FormData) {
 }
 
 export async function deleteAccount(prevState: any, formData: FormData) {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   // Log activity before deleting
   const { data: { user } } = await supabase.auth.getUser()
@@ -176,7 +176,7 @@ export async function deleteAccount(prevState: any, formData: FormData) {
 }
 
 async function logActivity(userId: string, action: ActivityType, ipAddress?: string) {
-  const supabase = createClient()
+  const supabase = await createClient()
   
   await supabase
     .from('activity_logs')

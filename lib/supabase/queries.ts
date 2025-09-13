@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { User, ActivityLog } from '@/lib/supabase/types'
 
 export async function getUser(): Promise<User | null> {
-  const supabase = createClient()
+  const supabase = await createClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   
@@ -51,7 +51,7 @@ export async function getUser(): Promise<User | null> {
 }
 
 export async function getUserByStripeCustomerId(customerId: string): Promise<User | null> {
-  const supabase = createClient()
+  const supabase = await createClient()
   
   const { data, error } = await supabase
     .from('users')
@@ -75,7 +75,7 @@ export async function updateUserSubscription(
     subscriptionStatus: string
   }
 ) {
-  const supabase = createClient()
+  const supabase = await createClient()
   
   const { error } = await supabase
     .from('users')
@@ -91,7 +91,7 @@ export async function updateUserSubscription(
 }
 
 export async function getActivityLogs(): Promise<ActivityLog[]> {
-  const supabase = createClient()
+  const supabase = await createClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   
@@ -125,7 +125,7 @@ export async function createUser(userData: {
   name?: string
   role?: string
 }) {
-  const supabase = createClient()
+  const supabase = await createClient()
   
   const { data, error } = await supabase
     .from('users')
