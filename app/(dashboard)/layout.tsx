@@ -90,8 +90,14 @@ function UserMenu() {
         </div>
         <Separator />
         <DropdownMenuItem asChild>
-          <Link href="/dashboard" className="flex w-full items-center">
+          <Link href="/home" className="flex w-full items-center">
             <Home className="mr-2 h-4 w-4" />
+            <span>Home</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/dashboard" className="flex w-full items-center">
+            <CircleIcon className="mr-2 h-4 w-4" />
             <span>Dashboard</span>
           </Link>
         </DropdownMenuItem>

@@ -1,10 +1,43 @@
+'use client'
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ArrowRight, CreditCard, Database, Zap, Shield, Users, Star } from 'lucide-react';
 import { Terminal } from './terminal';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import useSWR from 'swr';
+import { User } from '@/lib/supabase/types';
 
-export default function HomePage() {
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
+export default function LandingPage() {
+  const { data: user, isLoading } = useSWR<User>('/api/user', fetcher);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && user) {
+      router.push('/home');
+    }
+  }, [user, isLoading, router]);
+
+  // Show loading state while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-64 mb-4"></div>
+          <div className="h-4 bg-gray-200 rounded w-48"></div>
+        </div>
+      </div>
+    );
+  }
+
+  // If user is logged in, they will be redirected, so this won't render
+  if (user) {
+    return null;
+  }
   return (
     <main className="min-h-screen bg-background">
       <section className="py-20">

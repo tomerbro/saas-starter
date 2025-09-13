@@ -49,7 +49,7 @@ export async function signIn(prevState: any, formData: FormData) {
   }
 
   revalidatePath('/', 'layout')
-  redirect('/dashboard?revalidated=true')
+  redirect('/home?revalidated=true')
 }
 
 export async function signUp(prevState: any, formData: FormData) {
@@ -87,7 +87,7 @@ export async function signUp(prevState: any, formData: FormData) {
   }
 
   revalidatePath('/', 'layout')
-  redirect('/dashboard?revalidated=true')
+  redirect('/home?revalidated=true')
 }
 
 export async function signOut() {
