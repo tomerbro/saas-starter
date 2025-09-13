@@ -30,6 +30,7 @@ export async function getUser(): Promise<User | null> {
           id: user.id,
           email: user.email!,
           name: user.user_metadata?.name || null,
+          avatar_url: user.user_metadata?.avatar_url || user.user_metadata?.picture || null,
           role: 'member'
         })
         .select()
@@ -124,6 +125,7 @@ export async function createUser(userData: {
   id: string
   email: string
   name?: string
+  avatar_url?: string
   role?: string
 }) {
   const supabase = await createClient()
@@ -134,6 +136,7 @@ export async function createUser(userData: {
       id: userData.id,
       email: userData.email,
       name: userData.name || null,
+      avatar_url: userData.avatar_url || null,
       role: userData.role || 'member'
     })
     .select()

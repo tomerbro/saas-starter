@@ -14,6 +14,7 @@ export interface Database {
           id: string
           email: string
           name: string | null
+          avatar_url: string | null
           role: string
           created_at: string
           updated_at: string
@@ -28,6 +29,7 @@ export interface Database {
           id?: string
           email: string
           name?: string | null
+          avatar_url?: string | null
           role?: string
           created_at?: string
           updated_at?: string
@@ -42,6 +44,7 @@ export interface Database {
           id?: string
           email?: string
           name?: string | null
+          avatar_url?: string | null
           role?: string
           created_at?: string
           updated_at?: string

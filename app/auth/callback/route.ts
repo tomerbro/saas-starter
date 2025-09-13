@@ -19,13 +19,15 @@ export async function GET(request: NextRequest) {
       const { data: { user } } = await supabase.auth.getUser()
       
       if (user) {
-        // Ensure user profile exists in our database
+        // Ensure user profile exists in our database and update avatar
         try {
           const { data: existingUser, error: fetchError } = await supabase
             .from('users')
             .select('id')
             .eq('id', user.id)
             .single()
+
+          const googleAvatarUrl = user.user_metadata?.avatar_url || user.user_metadata?.picture || null
 
           if (!existingUser && fetchError?.code === 'PGRST116') {
             // Create user profile if it doesn't exist
@@ -35,6 +37,7 @@ export async function GET(request: NextRequest) {
                 id: user.id,
                 email: user.email!,
                 name: user.user_metadata?.full_name || user.user_metadata?.name || '',
+                avatar_url: googleAvatarUrl,
                 role: 'member',
                 created_at: new Date().toISOString(),
                 updated_at: new Date().toISOString()
@@ -44,6 +47,19 @@ export async function GET(request: NextRequest) {
 
             if (insertError) {
               console.error('Error creating user profile:', insertError)
+            }
+          } else if (existingUser) {
+            // Update avatar URL if user exists (in case they changed their Google picture)
+            const { error: updateError } = await supabase
+              .from('users')
+              .update({
+                avatar_url: googleAvatarUrl,
+                updated_at: new Date().toISOString()
+              })
+              .eq('id', user.id)
+
+            if (updateError) {
+              console.error('Error updating user avatar:', updateError)
             }
           }
         } catch (error) {

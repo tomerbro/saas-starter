@@ -66,12 +66,15 @@ function UserMenu() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-9 w-9 rounded-full">
           <Avatar className="h-9 w-9">
-            <AvatarImage alt={user.name || ''} />
+            <AvatarImage 
+              src={user.avatar_url || undefined} 
+              alt={user.name || user.email} 
+            />
             <AvatarFallback>
-              {user.email
-                .split(' ')
-                .map((n) => n[0])
-                .join('')}
+              {user.name 
+                ? user.name.split(' ').map((n) => n[0]).join('')
+                : user.email.split('@')[0].substring(0, 2).toUpperCase()
+              }
             </AvatarFallback>
           </Avatar>
         </Button>
