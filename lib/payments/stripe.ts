@@ -1,11 +1,11 @@
 import Stripe from 'stripe';
 import { redirect } from 'next/navigation';
-import { User } from '@/lib/db/schema';
+import { User } from '@/lib/supabase/types';
 import {
   getUserByStripeCustomerId,
   getUser,
   updateUserSubscription
-} from '@/lib/db/queries';
+} from '@/lib/supabase/queries';
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2025-04-30.basil'

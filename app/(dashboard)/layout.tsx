@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { use, useState, Suspense } from 'react';
+import { use, useState, Suspense, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { CircleIcon, Home, LogOut } from 'lucide-react';
 import {
@@ -11,22 +11,47 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { signOut } from '@/app/(login)/actions';
-import { useRouter } from 'next/navigation';
-import { User } from '@/lib/db/schema';
+import { signOut } from '@/lib/auth/actions';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { User } from '@/lib/supabase/types';
 import useSWR, { mutate } from 'swr';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 function UserMenu() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { data: user } = useSWR<User>('/api/user', fetcher);
+  const { data: user, error, isLoading } = useSWR<User>('/api/user', fetcher);
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Debug logging
+  useEffect(() => {
+    console.log('UserMenu - user data:', user);
+    console.log('UserMenu - error:', error);
+    console.log('UserMenu - isLoading:', isLoading);
+  }, [user, error, isLoading]);
+
+  // Revalidate user data when redirected after login
+  useEffect(() => {
+    if (searchParams.get('revalidated') === 'true') {
+      console.log('Revalidating user data...');
+      mutate('/api/user');
+      // Clean up the URL
+      const url = new URL(window.location.href);
+      url.searchParams.delete('revalidated');
+      router.replace(url.pathname + url.search);
+    }
+  }, [searchParams, router]);
 
   async function handleSignOut() {
     await signOut();
     mutate('/api/user');
     router.push('/');
+  }
+
+  // Show loading state while fetching
+  if (isLoading) {
+    return <div className="h-9 w-20 bg-gray-200 animate-pulse rounded" />;
   }
 
   if (!user) {

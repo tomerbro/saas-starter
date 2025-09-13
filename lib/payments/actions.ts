@@ -2,14 +2,24 @@
 
 import { redirect } from 'next/navigation';
 import { createCheckoutSession, createCustomerPortalSession } from './stripe';
-import { withUser } from '@/lib/auth/middleware';
+import { getUser } from '@/lib/supabase/queries';
 
-export const checkoutAction = withUser(async (formData, user) => {
+export async function checkoutAction(formData: FormData) {
+  const user = await getUser();
+  if (!user) {
+    redirect('/sign-in');
+  }
+
   const priceId = formData.get('priceId') as string;
-  await createCheckoutSession({ user: user, priceId });
-});
+  await createCheckoutSession({ user, priceId });
+}
 
-export const customerPortalAction = withUser(async (_, user) => {
+export async function customerPortalAction() {
+  const user = await getUser();
+  if (!user) {
+    redirect('/sign-in');
+  }
+
   const portalSession = await createCustomerPortalSession(user);
   redirect(portalSession.url);
-});
+}

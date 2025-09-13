@@ -8,7 +8,7 @@ import {
   CardTitle
 } from '@/components/ui/card';
 import { customerPortalAction } from '@/lib/payments/actions';
-import { User } from '@/lib/db/schema';
+import { User } from '@/lib/supabase/types';
 import useSWR from 'swr';
 import { Suspense } from 'react';
 
