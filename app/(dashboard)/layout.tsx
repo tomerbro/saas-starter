@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { use, useState, Suspense, useEffect } from 'react';
+import { useState, Suspense, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { CircleIcon, Home, LogOut } from 'lucide-react';
 import {
@@ -24,17 +24,9 @@ function UserMenu() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Debug logging
-  useEffect(() => {
-    console.log('UserMenu - user data:', user);
-    console.log('UserMenu - error:', error);
-    console.log('UserMenu - isLoading:', isLoading);
-  }, [user, error, isLoading]);
-
   // Revalidate user data when redirected after login
   useEffect(() => {
     if (searchParams.get('revalidated') === 'true') {
-      console.log('Revalidating user data...');
       mutate('/api/user');
       // Clean up the URL
       const url = new URL(window.location.href);

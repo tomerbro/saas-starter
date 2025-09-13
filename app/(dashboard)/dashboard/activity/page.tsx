@@ -7,8 +7,6 @@ import {
   UserCog,
   AlertCircle,
   UserMinus,
-  Mail,
-  CheckCircle,
   type LucideIcon,
 } from 'lucide-react';
 import { ActivityType } from '@/lib/supabase/types';
